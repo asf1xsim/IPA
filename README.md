@@ -57,4 +57,4 @@ University project for the course "Enterprise aplikace", Mendel University in Br
 
 Anton Simikin
 
-**My role:** [e.g. backend, calculation algorithms, Keycloak integration, Docker setup]
+**My role:** [backend, calculation algorithms, Keycloak integration, Docker setup]
