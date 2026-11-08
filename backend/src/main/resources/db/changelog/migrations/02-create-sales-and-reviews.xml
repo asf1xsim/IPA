@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="4" author="team-ipa">
+        <createTable tableName="sales_data">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="game_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="na_sales" type="decimal(10,2)"/>
+            <column name="eu_sales" type="decimal(10,2)"/>
+            <column name="jp_sales" type="decimal(10,2)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5" author="team-ipa">
+        <createTable tableName="reviews">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="game_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="critic_score" type="decimal(5,2)"/>
+            <column name="user_score" type="decimal(5,2)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="6" author="team-ipa">
+        <addForeignKeyConstraint baseTableName="sales_data"
+                                 baseColumnNames="game_id"
+                                 constraintName="fk_sales_game"
+                                 referencedTableName="games"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint baseTableName="reviews"
+                                 baseColumnNames="game_id"
+                                 constraintName="fk_reviews_game"
+                                 referencedTableName="games"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+</databaseChangeLog>

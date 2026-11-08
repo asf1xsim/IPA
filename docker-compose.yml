@@ -1,0 +1,77 @@
+services:
+  # 1. PostgreSQL
+  db:
+    image: postgres:15-alpine
+    container_name: ipa-postgres
+    environment:
+      POSTGRES_DB: ipa_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ipa-network
+
+  # 2. Keycloak (OAuth2 Provider)
+  keycloak:
+    image: quay.io/keycloak/keycloak:21.0
+    container_name: ipa-keycloak
+    command: start-dev --import-realm
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://db:5432/ipa_db
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: 123
+      KC_HOSTNAME_URL: http://localhost:8091
+      KC_SPI_THEME_DEFAULT_LOCALE: en
+    ports:
+      - "8091:8080"
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import
+      - ./keycloak-theme:/opt/keycloak/themes
+    depends_on:
+      - db
+    networks:
+      - ipa-network
+
+  # 3. Backend (Spring Boot)
+  backend:
+    build: ./backend
+    container_name: ipa-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/ipa_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 123
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://localhost:8091/realms/ipa-realm
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://keycloak:8080/realms/ipa-realm/protocol/openid-connect/certs
+    extra_hosts:
+      - "localhost:host-gateway"
+    depends_on:
+      - db
+      - keycloak
+    networks:
+      - ipa-network
+
+  # 4. Frontend (Vue + Nginx)
+  frontend:
+    build: ./frontend
+    container_name: ipa-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - ipa-network
+
+networks:
+  ipa-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

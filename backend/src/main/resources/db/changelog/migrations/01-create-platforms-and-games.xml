@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="team-ipa">
+        <createTable tableName="platforms">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="manufacturer" type="varchar(100)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="team-ipa">
+        <createTable tableName="games">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="title" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="genre" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="year_of_release" type="integer"/>
+            <column name="publisher" type="varchar(255)"/>
+            <column name="platform_id" type="bigint"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3" author="team-ipa">
+        <addForeignKeyConstraint baseTableName="games"
+                                 baseColumnNames="platform_id"
+                                 constraintName="fk_games_platform"
+                                 referencedTableName="platforms"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>

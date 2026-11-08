@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="7" author="team-ipa">
+        <createTable tableName="user_projects">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="username" type="varchar(150)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="project_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="target_genre" type="varchar(100)"/>
+            <column name="target_platform" type="varchar(50)"/>
+            <column name="calculated_risk" type="decimal(5,2)"/>
+            <column name="created_at" type="timestamp" defaultValueComputed="NOW()"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="8" author="team-ipa">
+        <addColumn tableName="user_projects">
+            <column name="expected_sales_region" type="varchar(10)"/>
+            <column name="expected_sales_amount" type="decimal(15,2)"/>
+            <column name="predicted_revenue" type="decimal(15,2)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>
